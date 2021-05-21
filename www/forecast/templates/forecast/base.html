@@ -1,0 +1,167 @@
+{% load static %}
+{% load tz %}
+{% localtime on %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="CPS">
+        
+        <title>Prediccion de Curva de Demanda </title>
+
+        {# Cargamos la librería de chart.js #}
+        <link rel="stylesheet" type="text/css" href="{% static 'forecast/style.css' %}">
+    
+        {# Cargamos la librería de moment.js #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+
+        {# Cargamos la librería de chart.js #}
+        <script src="{% static 'forecast/js/Chart.min.js' %}"></script>
+
+        {# Cargamos icono #}
+        <link rel="icon" href="{% static 'forecast/images/favicon.ico' %}">
+
+       {# Cargamos la librería #}
+       {% load bootstrap4 %}
+     
+       {# CSS Bootstrap #}
+       {% bootstrap_css %}
+
+       {# JS y jQuery Bootstrap #}
+       {% bootstrap_javascript jquery='full' %}
+       <script src="{% static 'forecast/js/jquery.dataTables.min.js' %}"></script>
+       <script src="{% static 'forecast/js/dataTables.bootstrap4.min.js' %}"></script>
+       <link rel="stylesheet" type="text/css" href="{% static 'forecast/css/dataTables.bootstrap4.min.css' %}">
+       <link rel="stylesheet" href="{% static 'forecast/css/buttons.bootstrap4.min.css' %}">
+       <link rel="stylesheet" href="{% static 'forecast/css/responsive.bootstrap4.min.css' %}">
+
+    </head>
+    <body>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<a class="navbar-brand" href="https://www.*******.es/"> <img src="{% static 'forecast/images/favicon.ico' %}" style="height: 50px;"/></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+              {% if response.user.name  %}
+              <ul class="navbar-nav mr-auto">
+                    {% with url_name=request.resolver_match.url_name %}
+                    <li class="nav-item {% if url_name == 'forecast' %}active{% endif %} ">
+                      <a class="nav-link" href="/prediccion">Predicción <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% if response.user.role == "admin" %}
+              
+                    <li class="nav-item {% if 'warning' in url_name %}active{% endif %}">
+                      <a class="nav-link" href="/avisos">Avisos </a>
+                    </li>
+                    <li class="nav-item {% if 'curve' in url_name %}active{% endif %}">
+                      <a class="nav-link" href="/curvas">Curvas </a>
+                    </li>
+                    <li class="nav-item {% if 'consum' in url_name %}active{% endif %}">
+                      <a class="nav-link" href="/consumo">Consumo</a>
+                  </li>
+                    <li class="nav-item {% if 'flowmeter' in url_name %}active{% endif %} ">
+                      <a class="nav-link" href="/caudalimetros">Caudalímetros</a>
+                    </li>
+                    <li class="nav-item {% if 'signal' in url_name %}active{% endif %} ">
+                      <a class="nav-link" href="/senales">Señales</a>
+                    </li>
+                    <li class="nav-item {% if 'lecture' in url_name %}active{% endif %}">
+                        <a class="nav-link" href="/lectura">Lectura</a>
+                    </li>
+                    <li class="nav-item {% if 'model' in url_name %}active{% endif %}">
+                        <a class="nav-link" href="/modelos">Modelo</a>
+                    </li>
+                    {% endif %}
+                    {% endwith %}
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+								<li class="nav-item">
+									<a class="nav-link" href="#">{{response.user.name }}</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/logout">Logout</a>
+								</li>
+              </ul>
+              {% endif %}
+            </div>
+          </nav>
+          <div class="alert alert-danger blink_me"  id="myNavbar" style="visibility:hidden ">
+            
+          </div>
+          <div class="container-fluid">
+              <div class="row">
+                  <div class="col-md-12">
+                  {% block content %}
+                  {% endblock %}
+                  </div>
+              </div>
+          </div>
+    <script>
+      $(document).ready(function(){
+        {% block jquery %}{% endblock %}
+      })
+    </script>
+
+    <!-- TABLA DINAMICA INICIO-->
+    <script src="{% static 'forecast/js/dataTables.buttons.min.js'%}"></script>
+    <script src="{% static 'forecast/js/buttons.bootstrap4.min.js'%}"></script>
+    <script src="{% static 'forecast/js/jszip.min.js'%}"></script>
+    <script src="{% static 'forecast/js/pdfmake.min.js'%}"></script>
+    <script src="{% static 'forecast/js/vfs_fonts.js'%} "></script>
+    <script src="{% static 'forecast/js/buttons.html5.min.js'%}"></script>
+    <script src="{% static 'forecast/js/buttons.print.min.js'%}"></script>
+    <script src="{% static 'forecast/js/buttons.colVis.min.js'%}"></script>
+    <script src="{% static 'forecast/js/dataTables.responsive.min.js'%}"></script>
+    <script src="{% static 'forecast/js/responsive.bootstrap4.min.js'%}" ></script>
+    <!-- TABLA DINAMICA FIN-->
+
+  <!-- TABLE INICIO-->
+  <script>
+    $(document).ready(function() {
+
+        var table = $('#table_forecast').DataTable( {
+          "createdRow": function( row, data, dataIndex ) {
+                    if ( data[1] == "Activo" ) {        
+                $(row).addClass('text-danger');}
+          },
+            lengthChange: true,
+            dom:"<'row'<'col-sm-3' l >>" + "<'row'<'col-sm-12 col-lg-9' B ><'col-sm-12 col-lg-3' f >>" + "trip",	
+            buttons: [ 
+              { extend: 'copy', text: 'Copiar'},
+              'excel', 'csv', 'pdf', 
+              { extend: 'colvis', text: 'Visibilidad'},
+              ],
+            language: {
+                url: "{% static 'forecast/json/Spanish.json' %}"
+            }
+        } );
+
+        table.buttons().container()
+            .appendTo( '#table_forecast_wrapper .col-md-6:eq(0)' );
+
+    } );
+  </script>
+  <!-- TABLE FIN-->
+
+    <!-- WARNINGS INICIO-->
+    <script>
+      var blinkWarning = document.getElementById("myNavbar");
+      var warnings = "{{response.warnings}}";
+      if (warnings > 0) {
+          blinkWarning.innerHTML  = 'Se ha detectado '+ warnings +' avisos pedientes. Pulsa <a href="/avisos">aquí</a> para obtener más información.'
+          blinkWarning.style.visibility = "visible";
+      } else {
+          blinkWarning.style.visibility = "hidden";
+      }
+    </script>
+    <!--WARNINGS FIN-->
+
+    <!-- WEB SOCKET INICIO-->
+    <script src="{% static 'forecast/js/WSwarnings.js'%}" ></script>
+    <!-- WEB SOCKET FIN-->
+
+    </body>
+{% endlocaltime %}
+</html>

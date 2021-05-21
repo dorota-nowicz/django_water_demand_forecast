@@ -1,0 +1,58 @@
+{% extends "forecast/base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="pb-4"> {{ object.name }} </h1>
+        <p>Limite: {{ object.limit }} </p>
+        <table  class="table table-striped table-bordered dt-responsive nowrap w-auto"> 
+            <thead>
+                <tr>
+                    <th class="th-sm">Nº</th> 
+                    <th class="th-sm">Caudalímetro</th>
+
+                </tr>
+            </thead>
+            {% for flowmeter in object.get_flowmeters  %}
+            <tr>
+                <td>{{ forloop.counter}}</td>
+                <td><a href="/caudalimetros/{{flowmeter.id}}/">{{flowmeter }}</a></td>
+            </tr>
+            {%endfor%}
+        </table>
+
+        <p class="text-muted">Para editar los caudalímetros de {{ object.name }} dirigese a la sección de <a href ="/caudalimetros">caudalimetros</a>.</p>
+
+        <a class="btn btn-dark" href="borrar/" role="button">Borrar</a>
+        <a class="btn btn-dark" href="actualizar/" role="button">Editar</a>
+        <a class="btn btn-dark" href="/curvas/" role="button">Cancelar</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        {% if object.limitwarning_set %}
+        <table  class="table table-striped table-bordered dt-responsive nowrap w-auto"> 
+            <thead>
+                <tr>
+                    <th class="th-sm">Nº</th> 
+                    <th class="th-sm">Aviso</th>
+                    <th class="th-sm">Fecha y hora</th>
+                    <th class="th-sm">Valor modelado</th>
+                    <th class="th-sm">Valor real</th>
+                </tr>
+            </thead>
+            {% for aviso in object.limitwarning_set %}
+            <tr>
+                <td>{{ forloop.counter}}</td>
+                <td><a href="/aviso/{{aviso.id}}/">{{aviso.text }}</a></td>
+            </tr>
+            {%endfor%}
+        </table>
+        {% else %}
+            <p>No hay avisos disponibles. </p>
+        {% endif %}
+    </div>
+</div>
+
+{%endblock%}

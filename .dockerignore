@@ -1,0 +1,4 @@
+*pyc
+/forecastenv
+/www/src/env_variable.py
+/www/postgresql2websocket/postgresql2websocket.conf

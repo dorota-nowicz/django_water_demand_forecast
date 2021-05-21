@@ -1,0 +1,86 @@
+version: '3'
+
+services:
+  db:
+    image: kartoza/postgis:11.0-2.5
+    container_name: forecastpostgis
+    volumes:
+      - forecast-postgis-data:/var/lib/postgresql
+    environment:
+      - TZ=Europe/Madrid
+      - PGTZ=Europe/Madrid
+      - POSTGRES_DB=forecast
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=cps
+    ports:
+      - "25432:****"
+    networks:
+      - "forecastnet"
+    restart: "unless-stopped"
+
+  web:
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=|EARdm]r{jO%fppRQWp3tB<d`->ZMJP1.9RX[|91qGxrag22|O
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=*******
+      - DB_NAME=forecast
+      - DB_HOSTNAME=forecastpostgis
+      - DB_PORT=****
+      # URL del Server OpenID
+      - ID_SERVER_URL=***********
+      # client id OpenID
+      - CLIENT_ID=cps-forecast-client
+      # client secret OpenID
+      - CLIENT_SECRET=secret01
+      # url de la aplicacion forecast debe coincidir con los argumentos SERVER_NAME:APP_PORT
+      - APP_URL=**********
+    build:
+      context: .
+      args: 
+        # puerto de la aplicación forecast (debe coincidir con el puerto externo de los puertos declarados más adelante)
+        - APP_PORT=******
+        - SERVER_NAME=*******
+        - TZ=Europe/Madrid
+      dockerfile: Dockerfile
+    container_name: forecastapache
+    networks:
+      - "forecastnet"
+    restart: "unless-stopped"
+    ports:
+      - '****:80' # no cambiar el 80 (interno apache)
+    depends_on:
+      - db
+
+  python:
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=cps
+      - DB_NAME=forecast
+      - DB_HOSTNAME=forecastpostgis
+      - DB_PORT=5432
+
+      # SWAGGER API KEY
+      - API_KEY=cps
+      - URL_BASE_API=http://10.0.2.15:3000
+      - SERVER_NAME=10.0.2.15
+      - SOCKET_PORT=3002 # no cambiar el 3002 (webscoket)
+    build:
+      context: .
+      args: 
+        - TZ=Europe/Madrid
+      dockerfile: Dockerfile_py
+    container_name: forecastpython
+    networks:
+      - "forecastnet"
+    restart: "unless-stopped"
+    ports:
+      - '3002:3002' # no cambiar el 3002 (de la derecha --interno webscoket)
+    depends_on:
+      - db
+
+volumes:
+  forecast-postgis-data:
+networks:
+    forecastnet:
+      driver: bridge

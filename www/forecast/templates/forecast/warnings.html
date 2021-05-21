@@ -1,0 +1,58 @@
+{% extends "forecast/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="panel-body">
+    <div class = "row justify-content-md-center pt-3">
+        <div class="col-12">
+            <h1>{{ set_warnings.title }} </h1>
+
+            {% if set_warnings.warnings %}
+            <div class="row mt-12">
+                <div class="col-12">
+                    <table id="table_forecast" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%"> 
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Nº</th> 
+                            
+                            <th class="th-sm">Activo</th> 
+                            
+                            <th class="th-sm" title="Fecha y hora del aviso">Fecha hora</th> 
+                            <!-- <th class="th-sm">Fecha y hora del registro</th>  -->
+                            <th class="th-sm" title="Curva de demanda de agua">Curva</th> 
+                            <!-- <th class="th-sm">Caudal del modelo</th> 
+                            <th class="th-sm">Caudal en tiempo Real</th>  -->
+                            <th class="th-sm" title="Diferencia de caudal modelado y real">Diff Q</th> 
+                            <!-- <th class="th-sm">Límite</th>  -->
+                            <th class="th-sm">Advertencia</th> 
+                            <th class="th-sm">Más info</th>
+                        </tr>
+                    </thead>
+                    {% for warning in set_warnings.warnings %}
+                    <tr>
+                        <td class="td-sm">{{ forloop.counter}}</td>
+                        
+                        <td class="td-sm">{{ warning.active |yesno:"Activo,No activo" }}  </td>
+                        
+                        <td class="td-sm">{{ warning.sample_datetime |date:"d-m-Y H:i"}}</td>
+                        <!-- <td class="td-sm">{{ warning.fk_consume.sample_datetime |date:"d-m-Y H:i"}}</td> -->
+                        <td class="td-sm"><a href="/curvas/{{ warning.fk_consume.fk_curve.id}}">{{ warning.fk_consume.fk_curve.name }}</a></td>
+                        <!-- <td class="td-sm">{{ warning.get_forecast_sample_value  | floatformat:2 }}</td>
+                        <td class="td-sm">{{ warning.fk_consume.sample_value | floatformat:2 }}</td> -->
+                        <td class="td-sm">{{ warning.get_diff_value | floatformat:2}}</td>
+                        <!-- <td class="td-sm">{{ warning.fk_consume.fk_curve.limit | floatformat:2}}</td> -->
+                        <td class="td-sm">{{ warning.text }}</td>
+                        <td class="td-sm"><a href="{{ warning.id}}">Más info</a></td>
+                    </tr>
+                    {%endfor%}
+                    </table>
+                </div>
+            </div>
+            {% else %}
+                <p>No hay avisos disponibles </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

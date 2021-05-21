@@ -1,0 +1,38 @@
+{% extends "forecast/base.html" %}
+
+{% block content %}
+
+<div class="panel-body">
+    <div class = "row justify-content-md-center pt-3">
+        <div class="col-12">
+            <h1 class="pb-4">Caudalímetros</h1>
+            <a class="mb-4 btn btn-dark" href="crear/" role="button">Nuevo caudalímetro</a>
+            {% if set_flowmeter %}
+            <table id="table_forecast" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%"> 
+            <thead>
+                <tr>
+                    <th class="th-sm">Nº</th> 
+                    <th class="th-sm">Caudalímetro</th>
+                    <th class="th-sm">Señal Analógica</th>
+                    <th class="th-sm">Señal Digital (correspondiente a la señal analógica)</th>
+                    <th class="th-sm">Curvas asosiadas</th>
+                </tr>
+            </thead>
+            {% for flowmeter in set_flowmeter %}
+            <tr>
+                <td>{{ forloop.counter}}</td>
+                <td><a href="{{flowmeter.id}}">{{flowmeter.name }}</a></td>
+                <td>{{flowmeter.analog_signal}}</td> 
+                <td>{{flowmeter.digital_signal }}</td>
+                <td>{{ flowmeter.curves.all|join:", "  }}</td>
+            </tr>
+            {%endfor%}
+            </table>
+            {% else %}
+                <p>No hay caudalímetros disponibles </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

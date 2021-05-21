@@ -1,0 +1,76 @@
+{% extends "forecast/base.html" %}
+
+{% block content %}
+
+<div class= "container">
+    <div class="panel-body">
+        <div class = "row justify-content-md-center pt-3">
+            <div class="col-12">
+                <h1 class="pb-4">Modelo de Redes Neuronales </h1>
+                <p>La API aprovecha el modelo de Redes Neuronales preparado por Carlos Gabriel Garcia Soto</p>
+                <div class="jumbotron mt-0 pt-0 mb-0 pb-0">
+                    <pre> 
+                        <code> 
+                            <!-- Lines of code starts -->
+                            <p># Definición del modelo de red neuronal MLP</br># Referencias:</br># https://keras.io/optimizers/</br># https://www.tensorflow.org/guide/keras/train_and_evaluate</br># https://www.dlology.com/blog/quick-notes-on-how-to-choose-optimizer-in-keras/</br># https://medium.com/@maksutov.rn/deep-study-of-a-not-very-deep-neural-network-part-3a-optimizers-overview-ed1631127fb7</br> </br></br># Fijamos los valores de diversos hiperparámetros</br>learning_rate=1e-2</br>num_epochs=800</br>tamanno_batch=128</br>momentum=0.9</br></br></br># Definimos el modelo de red neuronal MLP</br>model = Sequential()</br>f_act_int='tanh'</br>model.add(Dense(335, activation=f_act_int, input_dim=n_steps_in,dtype='float32'))</br>model.add(Dense(335, activation=f_act_int))</br>model.add(Dense(335, activation=f_act_int))</br>model.add(Dense(335, activation=f_act_int))</br>model.add(Dense(335, activation=f_act_int))</br>model.add(Dense(335, activation=f_act_int))</br>model.add(Dense(n_steps_out))</br></br></br>print('\nEstructura de la red neuronal: ')</br>print(model.summary())</br></br></br># Se compila y se entrena el modelo</br>model.compile(optimizer=optimizers.SGD(lr=learning_rate), loss='mse')</br></br></br>history=model.fit(X_train, y_train, epochs=num_epochs, verbose=1,batch_size=tamanno_batch,validation_data=(X_val, y_val),shuffle=True)</p> 
+                            <!-- Lines of code ends -->   
+                        </code> 
+                    </pre> 
+                </div>
+                </br>
+                <p><b>OUTPUT:</b> Estructura de la red neuronal: </p>
+                <div class="jumbotron mt-0 pt-0 mb-0 pb-0">
+                    <pre> 
+                        <code> 
+                           
+                            <p>
+Model: "sequential_1"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dense_1 (Dense)              (None, 335)               48575     
+_________________________________________________________________
+dense_2 (Dense)              (None, 335)               112560    
+_________________________________________________________________
+dense_3 (Dense)              (None, 335)               112560    
+_________________________________________________________________
+dense_4 (Dense)              (None, 335)               112560    
+_________________________________________________________________
+dense_5 (Dense)              (None, 335)               112560    
+_________________________________________________________________
+dense_6 (Dense)              (None, 335)               112560    
+_________________________________________________________________
+dense_7 (Dense)              (None, 3)                 1008      
+=================================================================
+Total params: 612,383
+Trainable params: 612,383
+Non-trainable params: 0
+                            </p>
+                        </code> 
+                    </pre> 
+                </div>
+                <p>Preparación del modelo para su uso en la API: </p>
+                <div class="jumbotron mt-0 pt-0 mb-0 pb-0">
+                    <pre> 
+                        <code> 
+                           
+                            <p>
+import pickle
+filename = 'red_neuronal_model.sav'
+model = pickle.load(open(filename, 'rb'))
+                            </p>
+                        </code> 
+                    </pre> 
+                </div>
+
+                <p>
+<b>Actualización del modelo: </b>Es imprescindible reentrenar el modelo cada cierto tiempo, ya que el modelo es dependiente del tiempo .
+
+               </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

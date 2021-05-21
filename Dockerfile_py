@@ -1,0 +1,25 @@
+
+FROM python:3.7.6
+
+
+ARG TZ
+ENV TZ ${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt-get update
+RUN apt-get -y install python3-pip
+RUN ln /usr/bin/pip3 /usr/bin/pip
+RUN pip install --upgrade pip
+
+COPY ./www/continous_process /var/www/continous_process
+COPY ./www/postgresql2websocket /var/www/postgresql2websocket
+
+WORKDIR /var/www/continous_process
+RUN pip install -r requirements.txt
+
+WORKDIR /var/www/postgresql2websocket
+RUN pip install -r requirements.txt
+
+WORKDIR /var/www
+
+CMD ["/bin/bash", "-c", "while !</dev/tcp/db/5432; do sleep 1; done;python ./continous_process/continous_process.py ${URL_BASE_API} ${API_KEY} & python ./postgresql2websocket/postgresql2websocket.py" ]

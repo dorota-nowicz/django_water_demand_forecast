@@ -1,0 +1,44 @@
+{% extends "forecast/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-body">
+         
+                <div class="row justify-content-md-center pt-5 px-md-5 pt-5">
+                    <div class="col-7">
+                        <h2>GIMA Predicción de la demanda</h2>
+                        <p>En este servicio se muestra la estimación de la demanda de agua en los próximos 30 minutos en las <a href="/curvas"> curvas </a>  predefinidas  utilizando un modelo computacional de Red Neuronal Artificial (sistema conexionista) que considera como variables de entrada las demandas de los 30 minutos anteriores al de estimación.</p>
+                        <p>El <a href="/modelos">modelo</a>  de pronóstico, elaborado por <a href="mailto: carlosgabriel.garcia@*******.es">Carlos Gabriel Garcia Soto</a>, corresponde al estudio y análisis de una serie temporal desde enero 2019  hasta mayo 2020.</p>
+                        <p>El servicio facilita la captura de la información cada 10 minutos sobre el seguimiento de los caudales en tiempo cuasi real. Para cada una de las asignaciones volumétricas, se realiza un control del consumo registrando información de los volúmenes entregados y modelados para detectar anomalías en el consumo de agua de cada curva de demanda. </p>
+                    </div>
+                </div>
+
+                <div class="row justify-content-md-center pt-5 px-md-5 pt-5">
+                    <div class="col-7">
+                        <p><b>Seleccione una curva para ver su predicción y lectura en el tiempo cuasi real:</b></p>
+                        {% if response.curves%}
+                        <form>
+                            <div class="form-group">
+                                <select class="form-control" id="curveSelect" onchange="document.location.href=this.value">
+                                    <option value="">--------------------------</option>
+                                    {% for curve in response.curves %}
+                                    <option value="/prediccion/{{curve.id}}">{{curve.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

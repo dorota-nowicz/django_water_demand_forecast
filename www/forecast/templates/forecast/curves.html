@@ -1,0 +1,46 @@
+{% extends "forecast/base.html" %}
+
+{% block content %}
+
+<div class="panel-body">
+    <div class = "row justify-content-md-center pt-2">
+        <div class="col-12">
+            <h1 class="pb-4">Curvas de consumo de agua potable</h1>
+          
+            <a class="mb-4 btn btn-dark" href="crear/" role="button">Nueva curva</a>
+        
+            {% if response.set_curves %}
+            <table id="table_forecast" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%"> 
+            <thead>
+                <tr>
+                    <th class="th-sm">Nº</th> 
+                    <th class="th-sm">Curva</th> 
+                    <th class="th-sm">Limite</th> 
+                    <th class="th-sm">Caudalímetros</th>
+                </tr>
+            </thead>
+            {% for curve in response.set_curves %}
+            <tr>
+                <td>{{ forloop.counter}}</td>
+                <td><a href="{{curve.id}}">{{curve.name }}</a></td>
+                <td>{{curve.limit }}</td>
+                <td>
+                    <ul>
+                        {% for flowmeter in curve.flowmeter_set.all %}
+                         <li><a href="/caudalimetros/{{flowmeter.id}}">{{flowmeter}} </a></li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {%endfor%}
+            </table>
+            {% else %}
+                <p>No hay curvas disponibles.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

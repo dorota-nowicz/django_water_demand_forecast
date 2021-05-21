@@ -1,0 +1,18 @@
+{% extends "forecast/base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="pb-4"> Registro del consumo de agua</h3>
+        <p>Fecha y hora: {{ object.sample_datetime  |date:"d-m-Y H:i" }} </p>
+        <p>Consumo: {{ object.sample_value | floatformat:2}} </p>
+        <p>Curva:  <a href="/curves/{{object.fk_curve.id}}">{{ object.fk_curve.name}} </a></p>  
+ 
+        <a class="btn btn-dark" href="borrar/" role="button">Borrar</a>
+        <a class="btn btn-dark" href="actualizar/" role="button">Editar</a>
+        <a class="btn btn-dark" href="/curvas/" role="button">Cancelar</a>
+    </div>
+</div>
+
+
+{%endblock%}

@@ -1,0 +1,5 @@
+*pyc
+/forecastenv
+/www/src/env_variable.py
+.git-old
+*sav

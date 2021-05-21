@@ -1,0 +1,18 @@
+{% extends "forecast/base.html" %}
+
+{% block content %}
+
+<div class="panel-body">
+    <div class = "row justify-content-md-center pt-5">
+        <div class="col-12">
+            <form method="post">{% csrf_token %}
+                <h3 class="pb-4">¿Quieres borrar la señal "{{object.tagname}}"?</h3>
+                <p><input class="btn btn-dark" type ='submit' value ='Sí' />
+                    <a class="btn btn-dark" href='../' role="button">Cancelar</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "forecast/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="panel-body">
+    <div class = "row justify-content-md-center pt-3">
+        <div class="col-12">
+            <h1 class="pb-4">Crear/Actualizar curva</h1>
+            <form method="post">
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <button type="submit" class="btn btn-dark">Enivar</button>
+                    <a class="btn btn-dark" href='../' role="button">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

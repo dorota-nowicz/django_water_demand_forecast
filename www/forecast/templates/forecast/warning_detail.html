@@ -1,0 +1,18 @@
+{% extends "forecast/base.html" %}
+
+{% block content %}
+
+<h3 class="pb-4"> {{ object.text }} </h3>
+
+<p><b>Activo : </b> {{object.active  |yesno:"Sí,No" }}</p> 
+<p><b>Fecha y hora del aviso : </b> {{object.sample_datetime |date:"d-m-Y H:i"}}</p> 
+<p><b>Fecha y hora del registro : </b> {{object.fk_consume.sample_datetime |date:"d-m-Y H:i"}}</p> 
+<p><b>Valor modelado: </b> {{ object.get_forecast_sample_value  | floatformat:2 }}</td> </p> 
+<p><b>Valor real: </b> {{ object.fk_consume.sample_value | floatformat:2 }}</td></p> 
+<p><b>Diferencia: </b> {{ object.get_diff_value | floatformat:2}}</td></p> 
+<p><b>Limite de diferencia: </b> {{ object.fk_consume.fk_curve.limit | floatformat:2}}</td></p> 
+
+<a class="btn btn-dark" href="borrar/" role="button">Borrar</a>
+<a class="btn btn-dark" href="actualizar/" role="button" title="Activar/desactivar un aviso">Editar</a>
+
+{%endblock%}

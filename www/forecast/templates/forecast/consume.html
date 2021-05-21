@@ -1,0 +1,42 @@
+{% extends "forecast/base.html" %}
+
+{% block content %}
+
+<div class="panel-body">
+    <div class = "row justify-content-md-center pt-2">
+        <div class="col-12">
+            <h1 class="pb-4">Consumo de agua de las curvas de demanda en los últimos 24 horas</h1>
+          
+            <a class="mb-4 btn btn-dark" href="crear/" role="button">Nuevo consumo</a>
+        
+            {% if response.set_consumo %}
+            <table id="table_forecast" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%"> 
+            <thead>
+                <tr>
+                    <th class="th-sm">Nº</th> 
+                    <th class="th-sm">Curva</th>
+                    <th class="th-sm">Fecha y hora</th> 
+                    <th class="th-sm">Consumo</th> 
+                    <th class="th-sm">Más info</th> 
+                </tr>
+            </thead>
+            {% for consume in response.set_consumo %}
+            <tr>
+                <td>{{ forloop.counter}}</td>
+                <td><a href="/curvas/{{consume.fk_curve.id}}">{{consume.fk_curve.name }}</a></td>
+                <td>{{consume.sample_datetime|date:"d-m-Y H:i" }}</td>
+                <td>{{consume.sample_value | floatformat:2}}</td>
+                <td><a href="{{consume.id}}">Más info</a></td>
+            </tr>
+            {%endfor%}
+            </table>
+            {% else %}
+                <p>No hay curvas disponibles.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
